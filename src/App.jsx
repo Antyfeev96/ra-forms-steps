@@ -1,9 +1,8 @@
 import './App.scss';
+import Container from './Components/Container/Container';
 
-function App() {
+export default function App() {
   return (
-    <div>123</div>
+    <Container />
   );
 }
-
-export default App;
