@@ -1,4 +1,5 @@
 import React from 'react'
+import { nanoid } from 'nanoid'
 import PropTypes from 'prop-types'
 import ListItem from '../ListItem/ListItem';
 
@@ -7,7 +8,7 @@ export default function ListItems(props) {
   return (
     <div>
       <div className="table__items">
-        {items.map((item, index) => <ListItem key={index} item={item} onDeleteItem={onDeleteItem} />)}
+        {items.map((item) => <ListItem key={nanoid()} item={item} onDeleteItem={onDeleteItem} />)}
       </div>
     </div>
   )
