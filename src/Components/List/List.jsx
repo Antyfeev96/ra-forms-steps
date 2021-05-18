@@ -4,7 +4,6 @@ import ListItems from '../ListItems/ListItems';
 
 export default function List(props) {
   const { items, onDeleteItem } = props;
-  console.log(items);
   return (
     <div className="table">
       <ListTitle />
@@ -14,5 +13,9 @@ export default function List(props) {
 }
 
 List.propTypes = {
-
+  items: PropTypes.arrayOf(PropTypes.shape({
+    timestamp: PropTypes.string,
+    distance: PropTypes.string
+  })),
+  onDeleteItem: PropTypes.func
 }

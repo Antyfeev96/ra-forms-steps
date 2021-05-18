@@ -1,7 +1,4 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-
-function ListTitle(props) {
+export default function ListTitle() {
   return (
     <div>
       <div className="table__title">
@@ -12,10 +9,3 @@ function ListTitle(props) {
     </div>
   )
 }
-
-ListTitle.propTypes = {
-
-}
-
-export default ListTitle
-

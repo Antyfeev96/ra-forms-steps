@@ -13,5 +13,9 @@ export default function ListItem(props) {
 }
 
 ListItem.propTypes = {
-
+  item: PropTypes.shape({
+    timestamp: PropTypes.string,
+    distance: PropTypes.string,
+  }),
+  onDeleteItem: PropTypes.func
 }

@@ -28,10 +28,6 @@ export default function Container() {
 
   const onAddItem = (e) => {
     e.preventDefault();
-    if (date(e.target.querySelector('#date').value) === 'Invalid date') {
-      e.target.closest('.form').querySelector('.form__date').classList.toggle('error');
-      return;
-    }
     const newDate = date(e.target.querySelector('#date').value);
     if (state.find(item => item.timestamp === newDate)) {
       setState(prev => {
