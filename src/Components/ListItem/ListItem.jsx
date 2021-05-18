@@ -2,12 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 export default function ListItem(props) {
-  const { item } = props;
+  const { item, onDeleteItem } = props;
   return (
     <div className="table__item">
-      <div>{item.timestamp}</div>
-      <div>{item.distance}</div>
-      <div>{item.delete}</div>
+      <div className="table__timestamp">{item.timestamp}</div>
+      <div className="table__distance">{item.distance}</div>
+      <div className="table__delete" onClick={onDeleteItem}>✘</div>
     </div>
   )
 }

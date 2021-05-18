@@ -1,19 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import ListItem from '../ListItem/ListItem';
 
-function ListItems(props) {
+export default function ListItems(props) {
+  const { items, onDeleteItem } = props;
   return (
     <div>
       <div className="table__items">
-        <ListItem items={state} />
+        {items.map((item, index) => <ListItem key={index} item={item} onDeleteItem={onDeleteItem} />)}
       </div>
     </div>
   )
 }
 
 ListItems.propTypes = {
-
+  items: PropTypes.array
 }
-
-export default ListItems
-
