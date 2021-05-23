@@ -1,76 +1,95 @@
-import moment from 'moment/min/moment-with-locales';
+import { nanoid } from 'nanoid';
 import React, { useState } from 'react'
 import Form from '../Form/Form'
 import List from '../List/List'
 
+const russianDate = (input) => {
+  const data = input.split('.')
+  const russianData = new Date(data[2], data[1] - 1, data[0]);
+  return russianData;
+};
+
+const convertToRussianString = (data) => {
+  const day = data.getDate().toString().length === 1 ? `0${data.getDate()}` : data.getDate();
+  const month = data.getMonth().toString().length === 1 ? `0${data.getMonth() + 1}` : data.getMonth() + 1;
+  return `${day}.${(month).toString()}.${data.getFullYear()}`
+}
+
 let ITEMS = [
   {
+    key: nanoid(5),
     timestamp: '20.07.2019',
     distance: '5'
   },
   {
-    timestamp: '19.07.2019',
+    key: nanoid(5),
+    timestamp: '08.12.1996',
     distance: '10'
   },
   {
+    key: nanoid(5),
     timestamp: '18.07.2019',
     distance: '8.8'
   },
-]
+];
 
 export default function Container() {
-  const date = (date) => {
-    moment.locale('ru');
-    return moment(date, 'DD.MM.YYYY').format('L');
-  };
 
-  const [state, setState] = useState(ITEMS.sort((a, b) => date(a.timestamp) < date(b.timestamp) ? 1 : -1));
+  const [state, setState] = useState(ITEMS.sort((a, b) => russianDate(a.timestamp) < russianDate(b.timestamp) ? 1 : -1));
+  const [form, setForm] = useState({
+    timestamp: '',
+    distance: ''
+  })
+
+  const handleTimestamp = (event) => {
+    const { value } = event.target;
+    setForm( prev => ({ ...prev, timestamp: value }));
+  }
+
+  const handleDistance = (event) => {
+    const { value } = event.target;
+    setForm( prev => ({ ...prev, distance: value }));
+  }
 
   const onAddItem = (e) => {
     e.preventDefault();
-    const newDate = date(e.target.querySelector('#date').value);
-    if (state.find(item => item.timestamp === newDate)) {
+    const ruDate = russianDate(form.timestamp);
+    const { distance } = form;
+    const endDate = convertToRussianString(ruDate);
+    if (state.find(item => item.timestamp === endDate)) {
       setState(prev => {
-        const newState = []
+        const newState = [];
         prev.forEach(item => {
-          if (item.timestamp === newDate) {
-            item.distance = (+item.distance + +e.target.querySelector('#distance').value).toString();
+          if (item.timestamp === endDate) {
+            const newDistance = (+item.distance + +distance).toString();
             item = {
-              timestamp: newDate,
-              distance: item.distance,
+              key: nanoid(5),
+              timestamp: endDate,
+              distance: newDistance,
             }
           }
           newState.push(item);
         })
-        e.target.querySelector('#date').value = ''
-        e.target.querySelector('#distance').value = ''
-        return newState.sort((a, b) => date(a.timestamp) < date(b.timestamp) ? 1 : -1)
+        return newState.sort((a, b) => russianDate(a.timestamp) < russianDate(b.timestamp) ? 1 : -1);
       })
     } else {
       setState(prev => {
         return [
           ...prev,
           {
-            timestamp: newDate,
-            distance: e.target.querySelector('#distance').value,
+            key: nanoid(5),
+            timestamp: endDate,
+            distance,
           }
-         ].sort((a, b) => date(a.timestamp) < date(b.timestamp) ? 1 : -1)
+         ].sort((a, b) => russianDate(a.timestamp) < russianDate(b.timestamp) ? 1 : -1)
       })
     }
   }
 
-  const onDeleteItem = (e) => {
-    const deletedItem = e.target.closest('.table__item').querySelector('.table__timestamp');
-    const newState = state.filter((item) => item.timestamp !== deletedItem.textContent)
-    setState(() => {
-      return newState.sort((a, b) => date(a.timestamp) < date(b.timestamp) ? 1 : -1)
-    })
-  }
-
   return (
     <div className="container">
-      <Form onAddItem={onAddItem} />
-      <List items={state} onDeleteItem={onDeleteItem} />
+      <Form setForm={setForm} onAddItem={onAddItem} handleTimestamp={handleTimestamp} handleDistance={handleDistance} />
+      <List items={state} setState={setState} />
     </div>
   )
 }

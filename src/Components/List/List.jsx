@@ -3,11 +3,11 @@ import ListTitle from '../ListTitle/ListTitle';
 import ListItems from '../ListItems/ListItems';
 
 export default function List(props) {
-  const { items, onDeleteItem } = props;
+  const { items, setState } = props;
   return (
     <div className="table">
       <ListTitle />
-      <ListItems items={items} onDeleteItem={onDeleteItem} />
+      <ListItems items={items} setState={setState} />
     </div>
   )
 }
@@ -17,5 +17,5 @@ List.propTypes = {
     timestamp: PropTypes.string,
     distance: PropTypes.string
   })),
-  onDeleteItem: PropTypes.func
+  setState: PropTypes.func
 }
