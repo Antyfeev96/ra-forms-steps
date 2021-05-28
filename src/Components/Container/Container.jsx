@@ -3,17 +3,20 @@ import React, { useState } from 'react'
 import Form from '../Form/Form'
 import List from '../List/List'
 
-const russianDate = (input) => {
-  const data = input.split('.')
-  const russianData = new Date(data[2], data[1] - 1, data[0]);
-  return russianData;
+const toDate = (input) => {
+  const parts = input.split('.')
+  const date = new Date(
+    parseInt(parts[2], 10), 
+    parseInt(parts[1], 10) - 1, 
+    parseInt(parts[0], 10)
+  );
+  const day = date.getDate().toString().length === 1 ? `0${date.getDate()}` : date.getDate();
+  const month = date.getMonth().toString().length === 1 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
+  return {
+    date,
+    string: `${day}.${(month).toString()}.${date.getFullYear()}`
+  }
 };
-
-const convertToRussianString = (data) => {
-  const day = data.getDate().toString().length === 1 ? `0${data.getDate()}` : data.getDate();
-  const month = data.getMonth().toString().length === 1 ? `0${data.getMonth() + 1}` : data.getMonth() + 1;
-  return `${day}.${(month).toString()}.${data.getFullYear()}`
-}
 
 let ITEMS = [
   {
@@ -35,7 +38,7 @@ let ITEMS = [
 
 export default function Container() {
 
-  const [state, setState] = useState(ITEMS.sort((a, b) => russianDate(a.timestamp) < russianDate(b.timestamp) ? 1 : -1));
+  const [state, setState] = useState(ITEMS.sort((a, b) => toDate(a.timestamp).date < toDate(b.timestamp).date ? 1 : -1));
   const [form, setForm] = useState({
     timestamp: '',
     distance: ''
@@ -53,24 +56,23 @@ export default function Container() {
 
   const onAddItem = (e) => {
     e.preventDefault();
-    const ruDate = russianDate(form.timestamp);
+    const date = toDate(form.timestamp).string;
     const { distance } = form;
-    const endDate = convertToRussianString(ruDate);
-    if (state.find(item => item.timestamp === endDate)) {
+    if (state.find(item => item.timestamp === date)) {
       setState(prev => {
         const newState = [];
         prev.forEach(item => {
-          if (item.timestamp === endDate) {
+          if (item.timestamp === date) {
             const newDistance = (+item.distance + +distance).toString();
             item = {
               key: nanoid(5),
-              timestamp: endDate,
+              timestamp: date,
               distance: newDistance,
             }
           }
           newState.push(item);
         })
-        return newState.sort((a, b) => russianDate(a.timestamp) < russianDate(b.timestamp) ? 1 : -1);
+        return newState.sort((a, b) => toDate(a.timestamp).date < toDate(b.timestamp).date ? 1 : -1);
       })
     } else {
       setState(prev => {
@@ -78,10 +80,10 @@ export default function Container() {
           ...prev,
           {
             key: nanoid(5),
-            timestamp: endDate,
+            timestamp: date,
             distance,
           }
-         ].sort((a, b) => russianDate(a.timestamp) < russianDate(b.timestamp) ? 1 : -1)
+         ].sort((a, b) => toDate(a.timestamp).date < toDate(b.timestamp).date ? 1 : -1)
       })
     }
   }
